@@ -184,10 +184,18 @@ class Markdown extends Component {
             return this.props.renderLink(node.props.href, node.props.title, children, key);
         }
 
+        const onLinkPress = () => {
+            if (this.props.onLinkPress !== null) {                
+                this.props.onLinkPress(node.props.href).catch(() => { })
+            } else { 
+                Linking.openURL(node.props.href).catch(() => { })
+            }
+        }
+
         const SafeWrapper = Utils.isTextOnly(children) ? Text : TouchableOpacity;
 
         return (
-            <SafeWrapper style={styles.linkWrapper} key={'linkWrapper_' + key} onPress={() => Linking.openURL(node.props.href).catch(() => { })}>
+            <SafeWrapper style={styles.linkWrapper} key={'linkWrapper_' + key} onPress={onLinkPress}>
                 {children}
             </SafeWrapper>
         );
@@ -315,6 +323,7 @@ Markdown.propTypes = {
     renderBlockQuote: PropTypes.func,
     renderBlockText: PropTypes.func,
     renderBlock: PropTypes.func,
+    onLinkPress: PropTypes.func
 };
 
 Markdown.defaultProps = {
